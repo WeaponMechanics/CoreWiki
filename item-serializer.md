@@ -15,6 +15,9 @@ Item:
   Unbreakable: <true/false>
   Custom_Model_Data: <custom model data number>
   Hide_Flags: <true/false>
+  Max_Stack_Size: <amount>
+  Enchantment_Glint_Override: <true/false>
+  Is_Fire_Resistant: <true/false>
   Enchantments:
   - <Enchantment> <Level>
   Skull_Owning_Player: <UUID of player or name of player>
@@ -102,6 +105,24 @@ The [custom model data](https://www.planetminecraft.com/forums/communities/textu
 #### Hide\_Flags
 
 Hides all item flags (Enchantments, Attributes, Unbreakable, Destroys, Placed on, Potion effects, Dye color).
+
+#### Max\_Stack\_Size
+
+Overrides the stack size for this item. Typically either `1`, `16`, or `64`. This can be used to make your items unstackable.
+
+Only works in 1.21+
+
+#### Enchantment\_Glint\_Override
+
+If true, your item will have the enchantment shine. If false, your item will not have the enchantment shine, regardless of enchantments.
+
+Only works in 1.21+
+
+#### Is\_Fire\_Resistant
+
+If true, your item will be immune to fire/lava, just like netherite armor is immune to fire/lava.&#x20;
+
+Only works in 1.21+
 
 #### Enchantments
 

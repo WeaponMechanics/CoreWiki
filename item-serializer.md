@@ -11,21 +11,48 @@ Item:
   Lore:
   - <Lore line>
   - <etc.>
-  Durability: <durability>
   Unbreakable: <true/false>
   Custom_Model_Data: <custom model data number>
   Hide_Flags: <true/false>
   Max_Stack_Size: <amount>
   Enchantment_Glint_Override: <true/false>
-  Is_Fire_Resistant: <true/false>
+  Damage_Resistant: <DamageType>
   Enchantments:
   - <Enchantment> <Level>
-  Skull_Owning_Player: <UUID of player or name of player>
-  Potion_Color: <Color>
+  Durability:
+    Damage: <integer>
+    Max_Damage: <integer>
+  Tool:
+    Default_Mining_Speed: <amount>
+    Damage_Per_Block: <integer>
+    Rules:
+    - <block> <amount>
+    - <block> <amount> <drop item true/false>
+    - <etc.>
+  Food:
+    Nutrition: <food bars>
+    Saturation: <integer>
+    Can_Always_Eat: <true/false>
+  Equippable:
+    Slot: <FEET/LEGS/CHEST/HEAD/BODY>
+    Equip_Sound: <Sound>
+    Model: "minecraft:model_location"
+    Camera_Overlay: "minecraft:overlay_location"
+    Dispensable: <true/false>
+    Swappable: <true/false>
+    Damage_On_Hurt: <true/false>
+    Entities:
+    - <EntityType>
   Attributes:
+  - <Attribute> <Amount>
   - <Attribute> <Amount> <Slot>
+  - <Attribute> <Amount> <Slot> <Operation>
+  - <etc.>
+  Skull_Owning_Player: <UUID> <URL>
+  Potion_Color: <Color>
   Leather_Color: <Color>
-  Light_Level: <1-16>
+  Trim_Pattern: <Pattern>
+  Trim_Material: <Material>
   Firework:
     Power: <firework power>
     Effects:
@@ -33,6 +60,7 @@ Item:
       - <Firework.Type> <ColorSerializer> <Trail> <Flicker>
       - <Firework.Type> <ColorSerializer> <Trail> <Flicker> <fade ColorSerializer>
       - <etc.>
+  Light_Level: <1-16>
   Deny_Use_In_Crafting: <true/false>
   Recipe:
     Shape:
@@ -90,10 +118,6 @@ We use[ MiniMessage](https://docs.advntr.dev/minimessage/format.html) to parse m
 
 </details>
 
-#### Durability
-
-Set the damage of the item for damageable items (Like fishing rods, and armor).
-
 #### Unbreakable
 
 Use `true` for the item to be unbreakable. Unbreakable items do not show their durability bar, and can never be broken by durability.&#x20;
@@ -110,19 +134,20 @@ Hides all item flags (Enchantments, Attributes, Unbreakable, Destroys, Placed on
 
 Overrides the stack size for this item. Typically either `1`, `16`, or `64`. This can be used to make your items unstackable.
 
-Only works in 1.21+
-
 #### Enchantment\_Glint\_Override
 
 If true, your item will have the enchantment shine. If false, your item will not have the enchantment shine, regardless of enchantments.
 
-Only works in 1.21+
-
 #### Is\_Fire\_Resistant
 
-If true, your item will be immune to fire/lava, just like netherite armor is immune to fire/lava.&#x20;
+If true, your item will be immune to fire/lava, just like netherite armor is immune to fire/lava.
 
-Only works in 1.21+
+#### Damage\_Resistant
+
+Let's your item be immune to 1 type of damage. Try:
+
+* `is_explosion` :  Prevent explosions from damaging items
+* `is_fire`: Prevent fire from damaging items
 
 #### Enchantments
 
@@ -137,6 +162,50 @@ The following example gives sharpness 5 and smite 5:
       - sharpness 5
       - smite 5
 ```
+
+#### Durability
+
+Used to let your items have a durability bar.&#x20;
+
+* `Damage`: How much damage is already applied to the item, by default
+* `Max_Damage` : The total amount of damage the item can take before breaking
+
+{% hint style="warning" %}
+The Durability feature cannot be used with the Unbreaking or Max\_Stack\_Size features due to Minecraft limitations.
+{% endhint %}
+
+#### Tool
+
+Turns your item into a "tool" which can be used to customize the mining speed on certain blocks.
+
+* `Default_Mining_Speed`: The "base rate" of your tool
+  * Typically you use `1.0` here
+* `Damage_Per_Block`: How much damage your tool takes, if `Durability` is also used.
+* `Rules`
+  * Follows the format: `<block> <mining speed> <drops item true/false>`
+  * For example, `#wool 2.0 true` lets the tool mine all wools at 2x speed
+
+#### Food
+
+Turns your item into food, which can be eaten by the player for saturation.
+
+* `Nutrition`: The amount of food bars to restore
+* `Saturation`: The amount of healing to do
+* `Can_Always_Eat`: true if the food can always be eaten, like a golden apple
+
+#### Equippable
+
+Turns your item into an equippable item, like armor. Equippable armor can be worn by entities.
+
+* `Slot`: The slot to equip to, either `FEET/LEGS/CHEST/HEAD`
+  * You can also use `BODY` for horses/wolves
+* `Equip_Sound`: The minecraft sound to play when the item is equipped
+* `Model`: The resource location of the model of the armor
+* `Camera_Overlay`: The resource location of the overlay, like the pumpkin overlay when worn on the head.
+* `Dispensable`: `true` if the item can be equipped by a dispenser
+* `Swappable`: `true` if the item can be swapped using "right click"
+* `Damage_On_Hurt`: `true` if the item should be damaged when the user takes damage.
+* `Entities`: The entities that can equip the armor
 
 #### Skull\_Owning\_Player
 
@@ -154,34 +223,17 @@ For example, `Potion_Color: "255-0-0"` is red.&#x20;
 
 #### Attributes
 
-List of attributes to apply to the item. Follows the format `attribute value slot`. The "slot" argument is optional; leaving it blank will let all slots work for the attribute.&#x20;
+List of attributes to apply to the item. Follows the format `attribute value slot operation`. The "slot" argument is optional; leaving it blank will let all slots work for the attribute. The "operation" argument is optional; leaving it blank defaults to `ADD_VALUE`.
 
-| Attribute                      | Description                                                                                                            |
-| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
-| `GENERIC_MOVEMENT_SPEED`       | A value of `0.10` increases speed by 10%.                                                                              |
-| `GENERIC_MAX_HEALTH`           | A value of 20 adds 20 health to the entity (a second row of hearts).                                                   |
-| `GENERIC_ATTACK_DAMAGE`        | A value of `7.0` will be as strong as a diamond sword.                                                                 |
-| `GENERIC_ATTACK_SPEED`         | A value of `4.0` will allow 4 full strength attacks every second.                                                      |
-| `GENERIC_KNOCKBACK_RESISTANCE` | A value of `0.25` is 25% less knockback taken.                                                                         |
-| `GENERIC_ARMOR`                | A value of 2 provides 1 full armor point.                                                                              |
-| `GENERIC_ARMOR_TOUGHNESS`      | Higher values prevent stronger attacks from dealing high damage. [More info](https://minecraft.fandom.com/wiki/Armor). |
-
-Attributes can be added to the following slots:
-
-1. `MAIN_HAND`
-2. `OFF_HAND`
-3. `HEAD`
-4. `CHEST`
-5. `LEGS`
-6. `FEET`
+See a list of all attributes [here](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html). See a list of all slots [here](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/inventory/EquipmentSlotGroup.html). See a list of all operations [here](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/AttributeModifier.Operation.html).
 
 Example:
 
 ```yaml
   Attributes:
-  - GENERIC_MAX_HEALTH 5 feet               # gain 2.5 hearts
-  - GENERIC_KNOCKBACK_RESISTANCE 0.25 feet  # take 25% less knockback
-  - GENERIC_MOVEMENT_SPEED -0.07 feet       # go very slow
+  - MAX_HEALTH 5 feet               # gain 2.5 hearts
+  - KNOCKBACK_RESISTANCE 0.25 feet  # take 25% less knockback
+  - MOVEMENT_SPEED -0.07 feet       # go very slow
 ```
 
 #### Leather\_Color
@@ -213,10 +265,10 @@ Sets the firework data of the firework. Make sure to use `Type: firework_rocket`
     * Uses [.](./ "mention")
   * `trail`:
     * true or false
-    * Optional value which defines whether firework has [trail](https://minecraft.fandom.com/wiki/Firework\_Star#Additional\_effects)
+    * Optional value which defines whether firework has [trail](https://minecraft.fandom.com/wiki/Firework_Star#Additional_effects)
   * `flicker`:
     * true or false
-    * Optional value which defines whether firework has [flicker](https://minecraft.fandom.com/wiki/Firework\_Star#Additional\_effects) (twinkle).
+    * Optional value which defines whether firework has [flicker](https://minecraft.fandom.com/wiki/Firework_Star#Additional_effects) (twinkle).
   * `fadeColor`:
     * Optional value which defines firework fade color
     * For example, `#ffff00` is yellow.

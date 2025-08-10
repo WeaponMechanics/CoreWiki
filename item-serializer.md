@@ -13,6 +13,7 @@ Item:
   - <etc.>
   Unbreakable: <true/false>
   Custom_Model_Data: <custom model data number>
+  Item_Model: minecraft:model_name
   Hide_Flags: <true/false>
   Max_Stack_Size: <amount>
   Enchantment_Glint_Override: <true/false>
@@ -125,6 +126,10 @@ Use `true` for the item to be unbreakable. Unbreakable items do not show their d
 #### Custom\_Model\_Data
 
 The [custom model data](https://www.planetminecraft.com/forums/communities/texturing/new-1-14-custom-item-models-tuto-578834/) of the item. Your server must be in MC 1.14.4 or higher.&#x20;
+
+#### Item\_Model
+
+The namespaced key `minecraft:namespace` of the item model.
 
 #### Hide\_Flags
 
